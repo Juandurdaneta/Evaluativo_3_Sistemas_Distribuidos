@@ -72,6 +72,20 @@ exports.getData = function(token){
     return decoded
 }
 
+exports.getProfile = function(userId, res){
+    User.findOne({_id: userId}, {password:0}, (err, user)=>{
+        if(!err && user){
+            res.send({
+                user
+            });
+        } else {
+            res.send({
+                status: 404,
+                message: "Not found."
+            });
+        }
+    })
+}
 
 
 function signUser(userDoc, res){
