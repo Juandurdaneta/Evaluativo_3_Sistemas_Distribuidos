@@ -31,6 +31,7 @@ router.get('/', (req, res)=>{
             })
         }
     } catch (error) {
+        console.log(error)
         res.send({
             status: 400,
             message: 'Invalid token or not provided, please try again.'
