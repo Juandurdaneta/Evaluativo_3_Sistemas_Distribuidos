@@ -87,6 +87,49 @@ exports.getProfile = function(userId, res){
     })
 }
 
+exports.addFriend = function(user, friendId, res){
+
+    const areFriends = user.friendList.includes(friendId);
+
+
+
+    if(user && !areFriends){
+        User.findOneAndUpdate({_id: friendId}, {$push: {friendList: user._id}}, {new: true}, (err, user)=>{
+            if(!err){
+                console.log(user);
+            } else {
+                console.log(err);
+            }
+        } );
+
+        User.findOneAndUpdate({_id: user._id}, {$push: {friendList: friendId}}, {new: true}, (err, user)=>{
+            if(!err && user){
+                signUser(user._doc, res);
+            } else {
+                res.send({
+                    status: 400,
+                    message: "An error has occurred, please try again."
+                })
+            }
+        })
+
+
+    } else if(areFriends){
+        res.send({
+            status: 400,
+            message: "User are already friends."
+        })
+    }
+
+    else {
+        res.send({
+            status: 403,
+            message: "Invalid token or not provided. Please try again."
+        })
+    }
+
+}
+
 
 function signUser(userDoc, res){
     jwt.sign(userDoc, process.env.SECRET_KEY, (err, token)=>{
