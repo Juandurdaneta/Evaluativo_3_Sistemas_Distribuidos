@@ -131,6 +131,33 @@ exports.addFriend = function(user, friendId, res){
 }
 
 
+exports.blockUser = function(currentUser, userId, res){
+    const isAdmin = currentUser.isAdministrator;
+
+    if(isAdmin){
+        User.findOneAndUpdate({_id: userId}, {allowedToPost: false}, (err, user) =>{
+            if(!err){
+                res.send({
+                    status: 200,
+                    message: `Blocked user ${user._id} from posting`
+                })
+            } else {
+                res.send({
+                    status: 400,
+                    message: 'An error has occurred.'
+                })
+            }
+        })
+    } else {
+        res.send({
+            status: 403,
+            message: "You're not allowed to do that."
+        })
+    }
+    
+};
+
+
 function signUser(userDoc, res){
     jwt.sign(userDoc, process.env.SECRET_KEY, (err, token)=>{
         if(!err){
