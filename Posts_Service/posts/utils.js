@@ -97,3 +97,22 @@ exports.updatePost = function(user, body, postId, res){
         })    
     }
 }
+
+// delete post
+
+exports.deletePost = function(user, postId, res){
+    Post.findOneAndDelete({_id: postId, author: user._id}, (err, post)=>{
+        if(!err && post){
+            res.send({
+                status:200,
+                message: "Post successfully deleted."
+            })
+        } else {
+            res.send({
+                status: 500,
+                message: "Something went wrong",
+                error: err
+            })
+        }
+    })
+}
