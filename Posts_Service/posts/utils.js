@@ -17,6 +17,8 @@ exports.getData = function(token){
     return decoded
 }
 
+// create post
+
 exports.createPost = function(user, data, res){
 
     const newPost = new Post({
@@ -46,3 +48,15 @@ exports.createPost = function(user, data, res){
     }
 
 }
+
+// get every post
+
+exports.getPosts = function(res){
+    Post.find({}, (err, posts)=>{
+        if(!err){
+            res.send({
+                posts
+            });
+        }
+    });
+};
