@@ -190,3 +190,30 @@ exports.commentPost = function(user, postId, data, res){
     })
 
 }
+
+exports.deleteComment = function(user, params, res){
+    const { postId, commentId } = params;
+
+    Comment.findOneAndDelete({author: user._id, _id: commentId}, (err, comment)=>{
+        if(!err){
+            Post.findOneAndUpdate({_id: postId}, {$pull: {comments: comment}}, (err, post)=> {
+                if(!err){
+                    res.send({
+                        status: 200,
+                        message: "Comment deleted successfully"
+                    })
+                } else {
+                    res.send({
+                        status: 500,
+                        message: "Something went wrong.."
+                    })
+                }
+            })
+        } else {
+            res.send({
+                status: 500,
+                message: "Something went wrong.."
+            })
+        }
+    } )
+}
