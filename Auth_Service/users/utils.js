@@ -157,6 +157,30 @@ exports.blockUser = function(currentUser, userId, res){
     
 };
 
+exports.deleteUser = function(currentUser, userId, res){
+    const isAdmin = currentUser.isAdministrator;
+    if(isAdmin){
+        User.findByIdAndDelete(userId, (err, user)=>{
+            if(!err){
+                res.send({
+                    status: 200,
+                    message: `User ${userId} successfully deleted.`
+                });
+            } else {
+                res.send({
+                    status: 500,
+                    message: `An error has occourred. Log : ${err}`
+                })
+            }
+        })
+    } else {
+        res.send({
+            status: 403,
+            message: "You're not authorized to do that.."
+        })
+    }
+}
+
 
 function signUser(userDoc, res){
     jwt.sign(userDoc, process.env.SECRET_KEY, (err, token)=>{
