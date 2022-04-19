@@ -12,6 +12,8 @@ const saltRounds = 10;
 const userSchema = require('./models.js');
 const User = userSchema.getUser();
 
+// creating a new user
+
 exports.createUser = function(data, res) {
     const { username, email, password } = data;
     
@@ -42,6 +44,8 @@ exports.createUser = function(data, res) {
 
 };
 
+// auth user with email and password
+
 exports.authenticateUser = function(data, res){
     const { email, password } = data;
 
@@ -59,6 +63,8 @@ exports.authenticateUser = function(data, res){
     });
 }
 
+// validate email
+
 exports.validateEmail = function(email){
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
       {
@@ -67,10 +73,14 @@ exports.validateEmail = function(email){
         return (false)
 }
 
+// decode token
+
 exports.getData = function(token){
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     return decoded
 }
+
+// get the profile of a user
 
 exports.getProfile = function(userId, res){
     User.findOne({_id: userId}, {password:0}, (err, user)=>{
@@ -86,6 +96,8 @@ exports.getProfile = function(userId, res){
         }
     })
 }
+
+// add a new friend
 
 exports.addFriend = function(user, friendId, res){
 
@@ -130,6 +142,7 @@ exports.addFriend = function(user, friendId, res){
 
 }
 
+// block user from posting
 
 exports.blockUser = function(currentUser, userId, res){
     const isAdmin = currentUser.isAdministrator;
@@ -156,6 +169,8 @@ exports.blockUser = function(currentUser, userId, res){
     }
     
 };
+
+// delete user (admin only function)
 
 exports.deleteUser = function(currentUser, userId, res){
     const isAdmin = currentUser.isAdministrator;
