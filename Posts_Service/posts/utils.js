@@ -132,4 +132,23 @@ exports.deletePost = function(user, postId, res){
             }
         });
     }
+};
+
+// reactions to post
+
+exports.reactToPost = function(user, postId, res){
+    Post.findOneAndUpdate({_id: postId}, {$inc: {'likes': 1}, $push : {likedBy : user._id }}, (err, post) =>{
+        if(!err){
+            res.send({
+                status: 200,
+                message: 'Post liked!'
+            })
+        } else{
+            res.send({
+                status: 500,
+                message: 'Something went wrong',
+                error: err
+            })
+        }
+    });
 }
