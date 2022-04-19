@@ -60,3 +60,40 @@ exports.getPosts = function(res){
         }
     });
 };
+
+// get specific post
+
+exports.getPost = function(postId, res){
+    Post.findById(postId, (err, post)=>{
+        if(!err && post){
+            res.send({
+                post
+            });
+        } else {
+            res.send({
+                status: 404,
+                message: "Post not found"
+            })
+        }
+    })
+};
+
+// update post
+
+exports.updatePost = function(user, body, postId, res){
+    if(user.allowedToPost){
+        Post.findOneAndUpdate({_id: postId, author: user._id}, body,{new: true}, (err, post)=>{
+            if(!err && post){
+                res.send({
+                    status: 200,
+                    message: "Post was updated successfully!"
+                })
+            } else {
+                res.send({
+                    status: 400,
+                    message: "Something went wrong.."
+                });
+            }
+        })    
+    }
+}
