@@ -40,6 +40,6 @@ exports.getPost = function() {
     return mongoose.model("Post", postSchema)
 }
 
-exports.getComments = function(){
+exports.getComment = function(){
     return mongoose.model("Comment", commentSchema);
 }
