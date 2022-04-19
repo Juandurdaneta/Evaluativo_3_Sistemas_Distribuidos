@@ -152,3 +152,41 @@ exports.reactToPost = function(user, postId, res){
         }
     });
 }
+
+// post comment
+
+exports.commentPost = function(user, postId, data, res){
+
+    const newComment = new Comment({
+        data,
+        author : user._id
+    });
+
+    newComment.save((err)=>{
+        if(!err){
+
+
+            Post.findByIdAndUpdate(postId, {$push: {comments: newComment}}, {new: true} , (err, post)=>{
+              if(!err){
+                res.send({
+                    status: 200,
+                    message: "Comment posted successfully!"
+                })
+              } else {
+                  res.send({
+                      status: 500,
+                      message: "Something went wrong..."
+                  })
+              }
+            })
+
+
+        } else {
+            res.send({
+                status: 500,
+                message: "Something went wrong..."
+            })
+        }
+    })
+
+}
