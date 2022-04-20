@@ -10,6 +10,10 @@ const commentSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Author',
         required: true
+    },
+    publishedOn : {
+        type: Date,
+        default: Date.now
     }
 })
 
@@ -34,7 +38,11 @@ const postSchema = new mongoose.Schema({
     likedBy:[{
         type: Schema.Types.ObjectId,
     }],
-    comments: [commentSchema]
+    comments: [commentSchema],
+    publishedOn : {
+        type: Date,
+        default: Date.now
+    }
 
 });
 

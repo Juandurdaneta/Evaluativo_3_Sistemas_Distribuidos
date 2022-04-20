@@ -88,17 +88,17 @@ router.post('/:postId/comment', (req, res)=>{
 
 // update comment
 
-router.put('/:postId/comment/:commentId', (req, res)=>{
-    try{
-        const user = utils.getData(req.headers.authorization.split(" ")[1]);
-        utils.updateComment(user, req.params, req.body, res);
-    } catch(err){
-        res.send({
-            status: 403,
-            message: "Token not provided or invalid. Try again later."
-        })
-    }
-})
+// router.put('/:postId/comment/:commentId', (req, res)=>{
+//     try{
+//         const user = utils.getData(req.headers.authorization.split(" ")[1]);
+//         utils.updateComment(user, req.params, req.body, res);
+//     } catch(err){
+//         res.send({
+//             status: 403,
+//             message: "Token not provided or invalid. Try again later."
+//         })
+//     }
+// })
 
 // delete comment
 
@@ -107,9 +107,12 @@ router.delete('/:postId/comment/:commentId', (req, res)=>{
         const user = utils.getData(req.headers.authorization.split(" ")[1]);
         utils.deleteComment(user, req.params, res);
     } catch(err){
+        console.log(err)
         res.send({
             status: 403,
             message: "Token not provided or invalid. Try again later."
         })
     }
 })
+
+module.exports = router;

@@ -21,8 +21,10 @@ exports.getData = function(token){
 
 exports.createPost = function(user, data, res){
 
+    console.log(data)
+
     const newPost = new Post({
-        data, 
+        ...data, 
         author: user._id
     });
 
@@ -34,6 +36,7 @@ exports.createPost = function(user, data, res){
                     message: "Post created successfully"
                 })
             } else {
+                console.log(err)
                 res.send({
                     status: 400,
                     message: "an error has occurred."
@@ -158,7 +161,7 @@ exports.reactToPost = function(user, postId, res){
 exports.commentPost = function(user, postId, data, res){
 
     const newComment = new Comment({
-        data,
+        ...data,
         author : user._id
     });
 
@@ -168,9 +171,10 @@ exports.commentPost = function(user, postId, data, res){
 
             Post.findByIdAndUpdate(postId, {$push: {comments: newComment}}, {new: true} , (err, post)=>{
               if(!err){
+                newComment.save();
                 res.send({
                     status: 200,
-                    message: "Comment posted successfully!"
+                    message: "Comment posted successfully!",
                 })
               } else {
                   res.send({
@@ -194,8 +198,10 @@ exports.commentPost = function(user, postId, data, res){
 exports.deleteComment = function(user, params, res){
     const { postId, commentId } = params;
 
-    Comment.findOneAndDelete({author: user._id, _id: commentId}, (err, comment)=>{
-        if(!err){
+    console.log(commentId, user._id)
+
+    Comment.findByIdAndDelete(commentId, (err, comment)=>{
+        if(!err  && comment){
             Post.findOneAndUpdate({_id: postId}, {$pull: {comments: comment}}, (err, post)=> {
                 if(!err){
                     res.send({
@@ -203,6 +209,7 @@ exports.deleteComment = function(user, params, res){
                         message: "Comment deleted successfully"
                     })
                 } else {
+                    console.log(err)
                     res.send({
                         status: 500,
                         message: "Something went wrong.."
@@ -210,6 +217,7 @@ exports.deleteComment = function(user, params, res){
                 }
             })
         } else {
+            console.log(err, 'here')
             res.send({
                 status: 500,
                 message: "Something went wrong.."
