@@ -128,19 +128,19 @@ router.delete('/deleteUser/:userId', (req, res)=>{
 
 // make admin
 
-router.post('/admin', (req,res)=>{
-    try{
-        const currentUser = utils.getData(req.headers.authorization.split(" ")[1]);
-        if(currentUser){
-            utils.makeAdministrator(currentUser, res);
-        }
-    } catch (error) {
-        res.send({
-            status: 400,
-            message: 'Invalid token or not provided, please try again.'
-        });
-    }
-})
+// router.post('/admin', (req,res)=>{
+//     try{
+//         const currentUser = utils.getData(req.headers.authorization.split(" ")[1]);
+//         if(currentUser){
+//             utils.makeAdministrator(currentUser, res);
+//         }
+//     } catch (error) {
+//         res.send({
+//             status: 400,
+//             message: 'Invalid token or not provided, please try again.'
+//         });
+//     }
+// })
 
 
 
