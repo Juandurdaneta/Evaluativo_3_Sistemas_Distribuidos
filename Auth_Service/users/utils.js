@@ -103,7 +103,7 @@ exports.addFriend = function(user, friendId, res){
 
     const areFriends = user.friendList.includes(friendId);
 
-
+    console.log(areFriends)
 
     if(user && !areFriends){
         User.findOneAndUpdate({_id: friendId}, {$push: {friendList: user._id}}, {new: true}, (err, user)=>{
@@ -149,7 +149,7 @@ exports.blockUser = function(currentUser, userId, res){
 
     if(isAdmin){
         User.findOneAndUpdate({_id: userId}, {allowedToPost: false}, (err, user) =>{
-            if(!err){
+            if(!err && user){
                 res.send({
                     status: 200,
                     message: `Blocked user ${user._id} from posting`
@@ -169,6 +169,37 @@ exports.blockUser = function(currentUser, userId, res){
     }
     
 };
+
+
+// unblock user from posting
+
+
+exports.unblockUser = function(currentUser, userId, res){
+    const isAdmin = currentUser.isAdministrator;
+
+    if(isAdmin){
+        User.findOneAndUpdate({_id: userId}, {allowedToPost: true}, (err, user) =>{
+            if(!err && user){
+                res.send({
+                    status: 200,
+                    message: `Unlocked user ${user._id} from posting`
+                })
+            } else {
+                res.send({
+                    status: 400,
+                    message: 'An error has occurred.'
+                })
+            }
+        })
+    } else {
+        res.send({
+            status: 403,
+            message: "You're not allowed to do that."
+        })
+    }
+    
+};
+
 
 // delete user (admin only function)
 
@@ -194,6 +225,14 @@ exports.deleteUser = function(currentUser, userId, res){
             message: "You're not authorized to do that.."
         })
     }
+}
+
+exports.makeAdministrator = function(user, res){
+    User.findByIdAndUpdate(user._id, {isAdministrator: true}, {new: true}, (err, user)=>{
+        if(!err){
+            signUser(user._doc, res)
+        }
+    })
 }
 
 

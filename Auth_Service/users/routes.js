@@ -20,10 +20,7 @@ router.get('/', (req, res)=>{
     try {
         const user = utils.getData(req.headers.authorization.split(" ")[1]);
         if(user){
-            res.send({
-                status: 200,
-                data: user
-            })
+           utils.getProfile(user._id, res);
         } else {
             res.send({
                 status: 400,
@@ -49,7 +46,7 @@ router.put("/addFriend/:userId", (req, res)=>{
    
     try {
         const currentUser = utils.getData(req.headers.authorization.split(" ")[1]);
-        if(user){
+        if(currentUser){
                 utils.addFriend(currentUser,req.params.userId, res);
            
         } else {
@@ -88,6 +85,26 @@ router.put('/blockUser/:userId', (req, res)=>{
     }
 });
 
+// unblock user from posting
+
+router.put('/unblockUser/:userId', (req, res)=>{
+    try {
+        const currentUser = utils.getData(req.headers.authorization.split(" ")[1]);
+        if(currentUser){
+            utils.unblockUser(currentUser, req.params.userId, res);
+        } else {
+            res.send({
+                status: 400,
+                message: 'Invalid token, please try again.'
+            })
+        }
+    } catch (error) {
+        res.send({
+            status: 400,
+            message: 'Invalid token or not provided, please try again.'
+        });
+    }
+});
 // delete account (admin)
 
 router.delete('/deleteUser/:userId', (req, res)=>{
@@ -100,6 +117,22 @@ router.delete('/deleteUser/:userId', (req, res)=>{
                 status: 400,
                 message: 'Invalid token, please try again.'
             })
+        }
+    } catch (error) {
+        res.send({
+            status: 400,
+            message: 'Invalid token or not provided, please try again.'
+        });
+    }
+})
+
+// make admin
+
+router.post('/admin', (req,res)=>{
+    try{
+        const currentUser = utils.getData(req.headers.authorization.split(" ")[1]);
+        if(currentUser){
+            utils.makeAdministrator(currentUser, res);
         }
     } catch (error) {
         res.send({
