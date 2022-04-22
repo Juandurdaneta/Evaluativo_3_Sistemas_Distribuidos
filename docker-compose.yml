@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+  zipkin:
+    image: openzipkin/zipkin-slim:2.19
+    ports:
+      - "127.0.0.1:9411:9411"
+
+
+  auth_service:
+    build:
+      context: ./Auth_Service
+      dockerfile: Dockerfile-zipkin
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      HOST: 0.0.0.0
+      ZIPKIN: zipkin:9411
+    depends_on:
+      - zipkin
+
+  posts_service:
+    build:
+      context: ./Posts_Service
+      dockerfile: Dockerfile-zipkin
+    ports:
+      - "127.0.0.1:3002:3002"
+    environment:
+      HOST: 0.0.0.0
+      ZIPKIN: zipkin:9411
+    depends_on:
+      - zipkin
